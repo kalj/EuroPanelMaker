@@ -77,6 +77,72 @@ panel_rotate = panel_flipped ? 180 : 0;
 
 margin = 0;
 
+// Board mount
+
+boardmount_board = [];
+// [length,
+//   width,
+//   hole_yoffset,
+//   hole_zoffset, 
+//   hole_diam]
+
+boardmount_wedges=[];
+// [ [xoffset, size] ]
+
+
+module boardmount_wedge(size=4, thickness=1)
+{
+    rotate([-90,0,0])
+    {
+        linear_extrude(thickness)
+        {
+            polygon([[0,0], [-size,0], [0,size]]);
+        }
+    }
+}
+
+module generate_boardmount()
+{
+    if(boardmount_board)
+    {
+        board_length = boardmount_board[0];
+        board_width = boardmount_board[1];
+        hole_yoffset = boardmount_board[2];
+        hole_zoffset = boardmount_board[3];
+        hole_diam = boardmount_board[4];
+
+        thickness=2;
+        board_zoffset = 12;
+        length = board_length;
+        height = board_zoffset + board_width;
+        yoffset=(eurorack_h-board_length)/2;
+
+        translate([hp*eurorack_w-thickness,yoffset,-rib_thickness])
+        {
+            for(w=boardmount_wedges) {
+                translate([0,w[0],0]) boardmount_wedge(w[1]);
+            }
+
+            translate([0,0,-height])
+            {
+                difference()
+                {
+                    cube([thickness,length,height]);
+                    translate([-thickness-2,0,0]) #cube([2, board_length, board_width]);
+                    for(y=[hole_yoffset,board_length-hole_yoffset]) {
+                        for(z=[hole_zoffset,board_width-hole_zoffset]) {
+                            translate([-1,y,z])
+                                rotate([0,90,0])
+                                cylinder(d=hole_diam, h=20);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+
 module generatePanel() {
     $fn = $preview ? 20 : 100;
 
@@ -86,6 +152,7 @@ module generatePanel() {
     rotate([0, panel_rotate, 0])
     difference(){
         union(){
+            generate_boardmount();
             translate([-margin, 0, 0])
             union() {
                 cube([w + margin * 2, eurorack_h, panel_thickness]);
