@@ -409,7 +409,7 @@ module generate_jacks(params, width){
 module generate_switches(params, width){
     translate([width, params[1], component_depth])
     rotate([0, 0, params[4] ? params[4] : 0])
-    #switch();
+    #switch(params[5] ? params[5] : 8);
 
     translate([width, params[1] + switch_label_distance, panel_thickness - text_depth])
     linear_extrude(height = text_depth + 1)
