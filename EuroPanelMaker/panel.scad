@@ -85,6 +85,7 @@ boardmount_board = [];
 //   hole_yoffset,
 //   hole_zoffset, 
 //   hole_diam]
+boardmount_with_frame=true;
 
 boardmount_wedges=[];
 // [ [xoffset, size] ]
@@ -125,10 +126,54 @@ module generate_boardmount()
 
             translate([0,0,-height])
             {
+                if($preview) translate([-thickness-2,0,0]) #cube([2, board_length, board_width]);
+
                 difference()
                 {
-                    cube([thickness,length,height]);
-                    translate([-thickness-2,0,0]) #cube([2, board_length, board_width]);
+                    if(boardmount_with_frame)
+                    {
+                        union() {
+                            difference()
+                            {
+                                frame_thickness=3;
+                                cube([thickness,length,height]);
+                                translate([-1,frame_thickness, frame_thickness])
+                                    cube([thickness+2,length-frame_thickness*2,board_width-frame_thickness*2]);
+                            }
+                            intersection()
+                            {
+                                cube([thickness,length,height]);
+                                n=20;
+                                angle=40;
+                                separation=13;
+                                mesh_thickness=2;
+
+                                union() {
+                                    for(i=[-n:n]) {
+                                        translate([thickness/2,length/2+i*separation,0])
+                                        {
+                                            rotate([angle,0,0]) cube([thickness,mesh_thickness,1000], center=true);
+                                            rotate([-angle,0,0]) cube([thickness,mesh_thickness,1000], center=true);
+                                        }
+                                    }
+
+                                    for(y=[hole_yoffset,board_length-hole_yoffset]) {
+                                        for(z=[hole_zoffset,board_width-hole_zoffset]) {
+                                            translate([0,y,z])
+                                                rotate([0,90,0])
+                                                cylinder(d=hole_diam+4, h=thickness);
+                                        }
+                                    }
+                                }
+
+                            }
+                        }
+                    }
+                    else
+                    {
+                        cube([thickness,length,height]);
+                    }
+
                     for(y=[hole_yoffset,board_length-hole_yoffset]) {
                         for(z=[hole_zoffset,board_width-hole_zoffset]) {
                             translate([-1,y,z])
