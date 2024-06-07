@@ -84,7 +84,8 @@ boardmount_board = [];
 //   width,
 //   hole_yoffset,
 //   hole_zoffset, 
-//   hole_diam]
+//   hole_diam,
+//   offset]
 boardmount_with_frame=true;
 
 boardmount_wedges=[];
@@ -116,7 +117,7 @@ module generate_boardmount()
         board_zoffset = 12;
         length = board_length;
         height = board_zoffset + board_width;
-        yoffset=(eurorack_h-board_length)/2;
+        yoffset=boardmount_board[5]? boardmount_board[5] : (eurorack_h-board_length)/2;
 
         translate([hp*eurorack_w-thickness,yoffset,-rib_thickness])
         {
