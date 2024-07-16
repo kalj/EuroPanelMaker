@@ -414,28 +414,15 @@ module generate_title() {
 }
 
 module generate_mounting_holes(params=[2, 95, "Label"]) {
-    if (hp == 1){
-        translate([c, 3, 0])
+    if (hp == 1 || hp == 2){
+        translate([eurorack_w/2, 3, 0])
         cylinder(r = 1.6, h = 10, center = true);
         
-        translate([c, eurorack_h - 3, 0])
+        translate([eurorack_w/2, eurorack_h - 3, 0])
         cylinder(r = 1.6, h = 10, center = true);
-    } else if (hp == 2){
-        hull(){
-            translate([c - 1, 3, 0])
-            cylinder(r = 1.6, h = 10, center = true);
             
-            translate([c + 1, 3, 0])
-            cylinder(r = 1.6, h = 10, center = true);
-        }
         
-        hull(){
-            translate([c - 1, eurorack_h - 3, 0])
-            cylinder(r = 1.6, h = 10, center = true);
             
-            translate([c + 1, eurorack_h - 3, 0])
-            cylinder(r = 1.6, h = 10, center = true);
-        }
     } else {
         hull(){
             translate([6, 3, 0])
