@@ -542,7 +542,8 @@ module generate_keys(params, width){
 
 module generate_leds(params, width){
     translate([width, params[1], component_depth])
-    #led(d = params[2]);
+    #led(params[2], params[3]);
+
 }
 
 // uncomment the following line for testing, otherwise it causes panels to generate twice
