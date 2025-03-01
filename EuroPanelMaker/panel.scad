@@ -109,20 +109,24 @@ module generate_boardmount()
     {
         board_length = boardmount_board[0];
         board_width = boardmount_board[1];
-        hole_yoffset = boardmount_board[2];
-        hole_zoffset = boardmount_board[3];
-        hole_diam = boardmount_board[4];
+        holes = boardmount_board[2];
+        hole_diam = boardmount_board[3];
 
         thickness=2;
         board_zoffset = 12;
         length = board_length;
         height = board_zoffset + board_width;
-        yoffset=boardmount_board[5]? boardmount_board[5] : (eurorack_h-board_length)/2;
+        yoffset=boardmount_board[4]? boardmount_board[4] : (eurorack_h-board_length)/2;
 
         translate([hp*eurorack_w-thickness,yoffset,-rib_thickness])
         {
             for(w=boardmount_wedges) {
-                translate([0,w[0],0]) boardmount_wedge(w[1]);
+                if(w[2]) {
+                    translate([0,w[0],0]) boardmount_wedge(w[1], w[2]);
+                }
+                else {
+                    translate([0,w[0],0]) boardmount_wedge(w[1]);
+                }
             }
 
             translate([0,0,-height])
@@ -158,12 +162,12 @@ module generate_boardmount()
                                         }
                                     }
 
-                                    for(y=[hole_yoffset,board_length-hole_yoffset]) {
-                                        for(z=[hole_zoffset,board_width-hole_zoffset]) {
-                                            translate([0,y,z])
-                                                rotate([0,90,0])
-                                                cylinder(d=hole_diam+4, h=thickness);
-                                        }
+                                    for(hole = holes) {
+                                        y=hole[0] < 0 ? board_length+hole[0] : hole[0];
+                                        z=hole[1] < 0 ? board_width+hole[1] : hole[1];
+                                        translate([0,y,z])
+                                            rotate([0,90,0])
+                                            cylinder(d=hole_diam+4, h=thickness);
                                     }
                                 }
 
@@ -175,12 +179,12 @@ module generate_boardmount()
                         cube([thickness,length,height]);
                     }
 
-                    for(y=[hole_yoffset,board_length-hole_yoffset]) {
-                        for(z=[hole_zoffset,board_width-hole_zoffset]) {
-                            translate([-1,y,z])
-                                rotate([0,90,0])
-                                cylinder(d=hole_diam, h=20);
-                        }
+                    for(hole =holes) {
+                        y=hole[0] < 0 ? board_length+hole[0] : hole[0];
+                        z=hole[1] < 0 ? board_width+hole[1] : hole[1];
+                        translate([-1,y,z])
+                            rotate([0,90,0])
+                            cylinder(d=hole_diam, h=20);
                     }
                 }
             }
