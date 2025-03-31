@@ -92,13 +92,22 @@ boardmount_wedges=[];
 // [ [xoffset, size] ]
 
 
-module boardmount_wedge(size=4, thickness=1)
+module boardmount_wedge(params)
 {
-    rotate([-90,0,0])
+    y = params[0];
+    size = params[1] ? params[1] : 4;
+    thickness = params[2] ? params[2] : 1;
+    angle = params[3] ? params[3] : 0;
+
+    depth = thickness/2 * tan(abs(angle));
+
+    translate([0,y+thickness/2,0])
+        rotate([-90,0,angle])
     {
+        translate([depth, 0, -thickness/2])
         linear_extrude(thickness)
         {
-            polygon([[0,0], [-size,0], [0,size]]);
+            polygon([[0,0], [-(size+depth),0], [0,(size+depth)]]);
         }
     }
 }
@@ -121,12 +130,7 @@ module generate_boardmount()
         translate([hp*eurorack_w-thickness,yoffset,-rib_thickness])
         {
             for(w=boardmount_wedges) {
-                if(w[2]) {
-                    translate([0,w[0],0]) boardmount_wedge(w[1], w[2]);
-                }
-                else {
-                    translate([0,w[0],0]) boardmount_wedge(w[1]);
-                }
+                boardmount_wedge(w);
             }
 
             translate([0,0,-height])
