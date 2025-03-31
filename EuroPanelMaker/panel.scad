@@ -86,7 +86,7 @@ boardmount_board = [];
 //   hole_zoffset, 
 //   hole_diam,
 //   offset]
-boardmount_with_frame=true;
+boardmount_with_frame=false;
 
 boardmount_wedges=[];
 // [ [xoffset, size] ]
