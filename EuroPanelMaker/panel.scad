@@ -18,7 +18,7 @@ panel_thickness = 2; // thickness
 component_depth = 1;
 text_depth = 1.4;
 
-rib_margin = 8;
+rib_margin = 8.5;
 rib_thickness = 3;
     
 hp = 6;
