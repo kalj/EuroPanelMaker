@@ -496,8 +496,10 @@ module generate_pots_rd901f(params, width) {
 }
 
 module generate_jacks(params, width){
+    cdepth = alist_get(params[5], "component_depth", component_depth);
+
     if (!params[3] || params[3] == "35mm") {
-        translate([width, params[1], component_depth])
+        translate([width, params[1], cdepth])
         rotate([0, 0, params[4] ? params[4] : 0])
         #jack_35mm();
 
@@ -515,7 +517,7 @@ module generate_jacks(params, width){
         text(params[2], font = label_font, size = jack_label_font_size, halign = "center", valign = "center");
 
     } else if (params[3] == "14in") {
-        translate([width, params[1], component_depth])
+        translate([width, params[1], cdepth])
         rotate([0, 0, params[4] ? params[4] : 0])
         #jack_14in();
 
@@ -528,11 +530,12 @@ module generate_jacks(params, width){
 module generate_switches(params, width){
     cdepth = alist_get(params[5], "component_depth", component_depth);
     switch_size = alist_get(params[5], "size", 8);
+    diameter = alist_get(params[5], "diameter", 7);
 
 
     translate([width, params[1], cdepth])
     rotate([0, 0, params[4] ? params[4] : 0])
-    #switch(switch_size);
+    #switch(switch_size, diameter);
 
     translate([width, params[1] + switch_label_distance, panel_thickness - text_depth])
     linear_extrude(height = text_depth + 1)
