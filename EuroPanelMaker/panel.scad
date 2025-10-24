@@ -320,12 +320,28 @@ module generate_title() {
 }
 
 module generate_mounting_holes(params=[2, 95, "Label"]) {
-    if (hp == 1 || hp == 2){
+    if (hp == 1) {
         translate([eurorack_w/2, 3, 0])
         cylinder(r = 1.6, h = 10, center = true);
         
         translate([eurorack_w/2, eurorack_h - 3, 0])
         cylinder(r = 1.6, h = 10, center = true);
+    } else if(hp == 2){
+        hull(){
+            translate([eurorack_w/2, 3, 0])
+            cylinder(r = 1.6, h = 10, center = true);
+
+            translate([eurorack_w/2+3, 3, 0])
+            cylinder(r = 1.6, h = 10, center = true);
+        }
+
+        hull(){
+            translate([eurorack_w/2, eurorack_h-3, 0])
+            cylinder(r = 1.6, h = 10, center = true);
+
+            translate([eurorack_w/2+3, eurorack_h-3, 0])
+            cylinder(r = 1.6, h = 10, center = true);
+        }
     } else {
         hull(){
             translate([6, 3, 0])
