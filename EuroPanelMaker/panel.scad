@@ -98,18 +98,20 @@ panel_rotate = panel_flipped ? 180 : 0;
 margin = 0;
 
 // Board mount
+BOARDMOUNT_HOLE_ALL_CORNERS = -1234567;
 
 boardmount_board = [];
 // [length,
 //   width,
-//   hole_yoffset,
-//   hole_zoffset, 
+//   hole_positions, // e.g [[hole1_yoffset, hole1_zoffset], [hole2_yoffset, hole2_zoffset]] where negative offsets means measure from other edge
+//                   // or [[hole_yoffs, hole_zoffset, BOARDMOUNT_HOLE_ALL_CORNERS]] - leads to 4 holes being added symmetrically
 //   hole_diam,
-//   y_offset]
+//   y_offset,       // centered if not passed
+//   z_offset,       // 13-component_depth if not passed
+// ]
 
 boardmount_wedges=[];
 // [ [yoffset, size,thickness,rotation] ]
-
 
 module boardmount_wedge(params)
 {
@@ -131,6 +133,12 @@ module boardmount_wedge(params)
     }
 }
 
+function generate_symmetrical_holes(h0) = [
+    [h0[0], h0[1]],
+    [h0[0], -h0[1]],
+    [-h0[0], h0[1]],
+    [-h0[0], -h0[1]]];
+
 module generate_boardmount()
 {
     if(boardmount_board)
@@ -138,11 +146,11 @@ module generate_boardmount()
         board_length = boardmount_board[0];
         board_width = boardmount_board[1];
         board_mount_height=2;
-        holes = boardmount_board[2];
+        holes = boardmount_board[2][0][2] == BOARDMOUNT_HOLE_ALL_CORNERS ? generate_symmetrical_holes(boardmount_board[2][0]) : boardmount_board[2];
         hole_diam = boardmount_board[3];
 
         thickness=2;
-        board_zoffset = 13 - component_depth;
+        board_zoffset =boardmount_board[5]? boardmount_board[5] : 13 - component_depth;
         length = board_length;
         height = board_zoffset + board_width;
         yoffset=boardmount_board[4]? boardmount_board[4] : (eurorack_h-board_length)/2;
