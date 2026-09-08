@@ -14,7 +14,7 @@ module pot_rv16() {
         translate([-8, -14, 0])
         cube([16, 14, 10]);
         
-        cylinder(r = 9.5 + tolerance, h = 10);
+        cylinder(r = 9 + tolerance, h = 10);
     }
 }
 

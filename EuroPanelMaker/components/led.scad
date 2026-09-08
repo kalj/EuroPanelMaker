@@ -1,4 +1,4 @@
-tolerance = 0.3;
+tolerance = 0.05;
 $fn = $preview ? 20 : 100;
 
 module led(d = 3, flange_d = undef) {
