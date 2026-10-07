@@ -159,7 +159,8 @@ module generate_boardmount()
         translate([hp*eurorack_w-thickness,yoffset,-rib_thickness])
         {
             for(w=boardmount_wedges) {
-                boardmount_wedge(w);
+                yoffset = w[0] >= 0 ? w[0] : board_length+w[0];
+                boardmount_wedge([yoffset, w[1], w[2], w[3]]);
             }
 
             translate([0,0,-height])
