@@ -13,10 +13,25 @@ jobs:
       - uses: actions/checkout@v5
       - name: Install (Windows)
         if: runner.os == 'Windows'
-        run: choco install -y --no-progress openscad imagemagick
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          choco install -y --no-progress openscad imagemagick
+          # The runner has no OpenGL; use Mesa's software renderer.
+          gh release download -R pal1000/mesa-dist-win -p 'mesa3d-*-release-msvc.7z' -O mesa.7z
+          7z x -y -omesa mesa.7z > /dev/null
+          cp mesa/x64/*.dll "/c/Program Files/OpenSCAD/"
+          ls "/c/Program Files/OpenSCAD/"
       - name: Install (macOS)
         if: runner.os == 'macOS'
-        run: brew install --cask openscad && brew install imagemagick
+        run: |
+          softwareupdate --install-rosetta --agree-to-license || true
+          curl -fsSL -o openscad.dmg https://files.openscad.org/OpenSCAD-2021.01.dmg
+          hdiutil attach -nobrowse -mountpoint /Volumes/OpenSCAD openscad.dmg
+          cp -R /Volumes/OpenSCAD/OpenSCAD.app /Applications/
+          /Applications/OpenSCAD.app/Contents/MacOS/OpenSCAD --version
+          brew install imagemagick
       - name: Show which tools the script finds
         shell: bash
         run: |
