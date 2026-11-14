@@ -10,7 +10,7 @@ pots = []; // x (in HP column), y (mm), label, rotation (degrees)
 leds = []; // x (in HP column), y (mm), diameter (mm)
 
 jacks = [
-    [1, 80, "J1"],
+    [1, 82, "J1"],
     [3, 80, "J2"],
     [1, 50, "J3", "35mm", 180],
     [3, 50, "J4", "35mm", 180],
