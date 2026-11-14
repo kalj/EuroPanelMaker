@@ -1,0 +1,41 @@
+name: Platforms (temporary)
+
+on: push
+
+jobs:
+  platforms:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v5
+      - name: Install (Windows)
+        if: runner.os == 'Windows'
+        run: choco install -y --no-progress openscad imagemagick
+      - name: Install (macOS)
+        if: runner.os == 'macOS'
+        run: brew install --cask openscad && brew install imagemagick
+      - name: Show which tools the script finds
+        shell: bash
+        run: |
+          export PATH="$PATH:$(ls -d /c/Program\ Files/ImageMagick* 2>/dev/null | head -1)"
+          which magick compare montage openscad || true
+      - name: --show --no-open
+        shell: bash
+        run: |
+          export PATH="$PATH:$(ls -d /c/Program\ Files/ImageMagick* 2>/dev/null | head -1)"
+          python3 tests/run_tests.py --show --no-open || python tests/run_tests.py --show --no-open
+      - name: --check --geometry
+        if: always()
+        shell: bash
+        run: |
+          export PATH="$PATH:$(ls -d /c/Program\ Files/ImageMagick* 2>/dev/null | head -1)"
+          PY=$(command -v python3 || command -v python)
+          "$PY" tests/run_tests.py --check --geometry
+      - uses: actions/upload-artifact@v6
+        if: always()
+        with:
+          name: output-${{ matrix.os }}
+          path: tests/output/
