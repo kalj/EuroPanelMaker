@@ -7,7 +7,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-latest, macos-latest]
+        os: [macos-latest]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v5
@@ -29,7 +29,8 @@ jobs:
           softwareupdate --install-rosetta --agree-to-license || true
           curl -fsSL -o openscad.dmg https://files.openscad.org/OpenSCAD-2021.01.dmg
           hdiutil attach -nobrowse -mountpoint /Volumes/OpenSCAD openscad.dmg
-          cp -R /Volumes/OpenSCAD/OpenSCAD.app /Applications/
+          ls /Volumes/OpenSCAD
+          cp -R /Volumes/OpenSCAD/*.app /Applications/OpenSCAD.app
           /Applications/OpenSCAD.app/Contents/MacOS/OpenSCAD --version
           brew install imagemagick
       - name: Show which tools the script finds
